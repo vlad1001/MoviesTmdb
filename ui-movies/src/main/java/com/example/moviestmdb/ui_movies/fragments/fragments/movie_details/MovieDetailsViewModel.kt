@@ -13,7 +13,6 @@ import com.example.moviestmdb.domain.interactors.AddFavoriteMovie
 import com.example.moviestmdb.domain.interactors.RemoveFavoriteMovie
 import com.example.moviestmdb.domain.interactors.UpdateMovieActors
 import com.example.moviestmdb.domain.interactors.UpdateMovieRecommended
-import com.example.moviestmdb.domain.observers.ObserveFavoriteMovie
 import com.example.moviestmdb.domain.observers.ObserverIsFavorite
 import com.example.moviestmdb.domain.observers.details_observers.ObserveMovieActors
 import com.example.moviestmdb.domain.observers.details_observers.ObserveMovieById

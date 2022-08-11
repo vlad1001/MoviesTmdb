@@ -20,6 +20,7 @@ import com.example.moviestmdb.ui_movies.databinding.FragmentDiscoverMoviesBindin
 import com.example.moviestmdb.ui_movies.fragments.fragments.filter_movies.FilterBottomSheet
 import com.example.moviestmdb.ui_movies.fragments.model.MovieAndGenre
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -49,12 +50,17 @@ class DiscoverFragment : Fragment() {
         initDiscoverAdapter()
         initVars()
 
+//        launchAndRepeatWithViewLifecycle {
+//            viewModel.pagedList.collectLatest { pagingData ->
+//                val data = pagingData.map {
+//                    MovieAndGenre(it, viewModel.genres.value)
+//                }
+//                discoverAdapter.submitData(data)
+//            }
+//        }
         launchAndRepeatWithViewLifecycle {
-            viewModel.pagedList.collectLatest { pagingData ->
-                val data = pagingData.map {
-                    MovieAndGenre(it, viewModel.genres.value)
-                }
-                discoverAdapter.submitData(data)
+            viewModel.pagedList2.collect { pagingData ->
+                discoverAdapter.submitData(pagingData)
             }
         }
     }
