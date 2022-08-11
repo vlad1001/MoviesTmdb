@@ -26,15 +26,27 @@ data class FilterParams(
     var genres: MutableSet<Int> = mutableSetOf()
 ) {
 
-//    fun isEmpty() =
-//        language.isEmpty()
-//                && genres.isEmpty()
-//                && dateFrom.isEmpty()
-//                && user_min_score == 0f
-//                && user_max_score == 10f
-//                && user_min_votes == 0f
-//                && duration_min == 0f
-//                && duration_max == 400f
+    fun clearAll() {
+        this.dateFrom = ""
+        this.dateTo= ""
+        this.user_min_score = "0"
+        this.user_max_score = "10"
+        this.user_min_votes = "0"
+        this.duration_min = "0"
+        this.duration_max = "400"
+        this.genres = mutableSetOf()
+    }
+
+    fun isEmpty() =
+        //language.isEmpty() &&
+                genres.isEmpty()
+                && dateFrom.isEmpty()
+                && dateTo.isEmpty()
+                && user_min_score == "0"
+                && user_max_score == "10"
+                && user_min_votes == "0"
+                && duration_min == "0"
+                && duration_max == "400"
 
     fun removeFilter(filterParam: FilterKey, value: Any) {
         when (filterParam) {
@@ -67,7 +79,6 @@ data class FilterParams(
 //            TO_DATE -> {
 //                this.dateTo = ""
 //            }
-
         }
     }
 

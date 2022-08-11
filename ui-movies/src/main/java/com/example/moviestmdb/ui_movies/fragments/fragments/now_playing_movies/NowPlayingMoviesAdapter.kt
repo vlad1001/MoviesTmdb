@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.example.moviestmdb.Genre
 import com.example.moviestmdb.ui_movies.databinding.ChipBinding
 import com.example.moviestmdb.ui_movies.databinding.ListItemNowPlayingMovieBinding
-import com.example.moviestmdb.ui_movies.fragments.view_holder.MovieAndGenre
+import com.example.moviestmdb.ui_movies.fragments.model.MovieAndGenre
 import com.example.moviestmdb.util.TmdbImageUrlProvider
 import com.google.android.material.chip.ChipGroup
 

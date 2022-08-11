@@ -24,7 +24,6 @@ class DiscoverPagingSource @Inject constructor(
 
             val movieList: MutableList<Movie> = mutableListOf()
             withContext(dispatchers.io){
-//                val result = movieRepository.getFilteredMovieList(pageNumber, emptyMap()).first()
                 val result = movieRepository.getFilteredMovieList(pageNumber, paramMap).first()
 
                 when (result) {

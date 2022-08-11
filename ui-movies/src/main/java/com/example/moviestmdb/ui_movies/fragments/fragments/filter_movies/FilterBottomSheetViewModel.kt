@@ -17,7 +17,7 @@ class FilterBottomSheetViewModel @Inject constructor(
     val dispatchers: AppCoroutineDispatchers
 ) : ViewModel() {
 
-    val filerParams = FilterParams()
+    var filerParams = FilterParams()
 
     val geners = observeGenres.flow
         .stateIn(
@@ -37,6 +37,10 @@ class FilterBottomSheetViewModel @Inject constructor(
     fun removeFilter(filterParam: FilterKey, value: Any){
         filerParams.removeFilter(filterParam, value)
     }
+
+//    fun saveParams(filterParam: FilterParams){
+//        this.filerParams = filterParam
+//    }
 
     fun getLanguageList(context: Context) =
     listOf(

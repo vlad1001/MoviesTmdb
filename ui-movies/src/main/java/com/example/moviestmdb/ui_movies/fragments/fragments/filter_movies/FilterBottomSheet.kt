@@ -13,8 +13,6 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.CompoundButton
 import android.widget.TextView
-import androidx.core.view.children
-import androidx.core.view.contains
 import androidx.core.view.forEach
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.viewModels
@@ -29,111 +27,106 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import org.threeten.bp.LocalDate
+import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.schedule
 
 
 @AndroidEntryPoint
-class FilterBottomSheet : BottomSheetDialogFragment() {
+class FilterBottomSheet(
+    private val initialFilterParams: FilterParams,
+    var listener: (response: FilterParams) -> Unit
+) : BottomSheetDialogFragment() {
 
     lateinit var binding: BottomSheetFilterBinding
     private val viewModel: FilterBottomSheetViewModel by viewModels()
+    private val DATE_PICKER_TAG = "DATE_PICKER_TAG"
 
-    private val _currentSelections = MutableStateFlow<Map<String, String>>(emptyMap())
-    val currentSelections = _currentSelections.asStateFlow()
+//    var listener: (response: FilterParams) -> Unit = {}
 
-    //var listener: (response: String) -> Unit = {}
-    var listener: (response: FilterParams) -> Unit = {}
+    private val filterParams: FilterParams
+        get() = viewModel.filerParams
 
-    private val selectedFilter = FilterParams()
-    val currentlySelectedChips: MutableList<Int> = mutableListOf()
+    constructor() : this(FilterParams(), {})
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (!initialFilterParams.isEmpty()) {
+            viewModel.filerParams = initialFilterParams
+        }
+
         binding = BottomSheetFilterBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initVars()
+        initFilterBinding()
 
         Handler(Looper.getMainLooper()).postDelayed({
-            loadValues()
-        }, 10) //millis
-
-
+            setLastSelectedValues()
+        }, 1)
     }
 
-    private fun loadValues() {
-        binding.userScoreRangeSlider.setValues(viewModel.filerParams.user_min_score.toFloat(), viewModel.filerParams.user_max_score.toFloat())
-        binding.runtimeSlider.setValues(viewModel.filerParams.duration_min.toFloat(), viewModel.filerParams.duration_max.toFloat())
-        binding.userVotesRangeSlider.value = viewModel.filerParams.user_min_votes.toFloat()
+    private fun setLastSelectedValues() {
+        binding.userScoreRangeSlider.setValues(
+            filterParams.user_min_score.toFloat(),
+            filterParams.user_max_score.toFloat()
+        )
+        binding.runtimeSlider.setValues(
+            filterParams.duration_min.toFloat(),
+            filterParams.duration_max.toFloat()
+        )
+        binding.userVotesRangeSlider.value = filterParams.user_min_votes.toFloat()
 
-        val adapter = ArrayAdapter(requireContext(), R.layout.language_list_item, viewModel.getLanguageList(requireContext()))
+        binding.datePickerFrom.text =
+            filterParams.dateFrom.ifEmpty {
+                "From Date"
+            }
+
+        binding.datePickerTo.text = filterParams.dateTo.ifEmpty {
+            "To Date"
+        }
+
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.language_list_item,
+            viewModel.getLanguageList(requireContext())
+        )
+
         (binding.languageMenu.editText as? AutoCompleteTextView)?.setAdapter(adapter)
         binding.languageAutoComplete.setText(viewModel.getLanguageList(requireContext())[2], false)
 
-        //currentlySelectedChips.addAll(viewModel.filerParams.genres)
-
         binding.bottomSheetChipGroup.forEach { chip ->
-            if(viewModel.filerParams.genres.contains(chip.id)){
+            if (filterParams.genres.contains(chip.id)) {
                 (chip as Chip).isChecked = true
             }
         }
-
-//        viewModel.geners.
-
-//        binding.bottomSheetChipGroup.setOnCheckedChangeListener { group, checkedId ->
-//            if(currentlySelectedChips.contains(checkedId)){
-//                viewModel.removeFilter(CHOSEN_GENRES, checkedId)
-////               currentlySelectedChips.remove(checkedId)
-//            }else{
-//                viewModel.addFilter(CHOSEN_GENRES, checkedId)
-////                currentlySelectedChips.add(checkedId)
-//            }
-//        }
     }
+
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = BottomSheetDialog(requireContext(), theme)
-        dialog.behavior.state = BottomSheetBehavior.SAVE_ALL
+        dialog.behavior.state = BottomSheetBehavior.STATE_HALF_EXPANDED
         return dialog
     }
 
     private fun getLatestValues() {
-        val ids = currentlySelectedChips.joinToString(separator = ",")
-        if (ids.isNotEmpty()) {
-            //selectedFilter["with_genres"] = ids
-        }
-
-//        val ids = binding.bottomSheetChipGroup.checkedChipIds.joinToString(separator = ",")
-//        if (ids.isNotEmpty()) {
-//            selectedFilter["with_genres"] = ids
-//        }
-
+//        val ids = currentlySelectedChips.joinToString(separator = ",")
 //        selectedFilter["vote_count.gte"] = "${binding.userVotesRangeSlider.value}"
 //        selectedFilter["vote_average.gte"] = "${binding.userScoreRangeSlider.values[0]}"
 //        selectedFilter["vote_average.lte"] = "${binding.userScoreRangeSlider.values[1]}"
 //        selectedFilter["with_runtime.gte"] = "${binding.runtimeSlider.values[0]}"
 //        selectedFilter["with_runtime.lte"] = "${binding.runtimeSlider.values[1]}"
-
 //        val language = binding.languageMenu.editText?.text.toString()
 //        if (language.isNotEmpty()) {
 //            selectedFilter["language"] = language
 //        }
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        super.onDismiss(dialog)
     }
 
     private fun addChips(chipGroup: ChipGroup, chips: List<Genre>) {
@@ -149,59 +142,35 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
     }
 
     private fun updateChipStatus(compountBtn: CompoundButton, isChecked: Boolean) {
-        if (!isChecked && currentlySelectedChips.contains(compountBtn.id)) {
+        if (!isChecked && filterParams.genres.contains(compountBtn.id)) {
             viewModel.removeFilter(CHOSEN_GENRES, compountBtn.id)
-            //currentlySelectedChips.remove(compountBtn.id)
         } else {
             viewModel.addFilter(CHOSEN_GENRES, compountBtn.id)
-            //currentlySelectedChips.add(compountBtn.id)
-
         }
     }
 
-    private fun initVars() {
-//        binding.userScoreRangeSlider.setValues(0.0f, 10.0f)
-//        binding.userScoreRangeSlider.stepSize = 1.0f
-//
-//        binding.userVotesRangeSlider.stepSize = 10.0f
-//
-//        binding.runtimeSlider.setValues(0.0f, 400.0f)
-//        binding.runtimeSlider.stepSize = 10.0f
+    private fun initFilterBinding() {
+        binding.closeBottomSheet.setOnClickListener {
+            dismiss()
+        }
 
         (binding.languageMenu.editText as? AutoCompleteTextView)?.doOnTextChanged { text, start, before, count ->
-//            selectedFilter["language"] = text.toString()
             viewModel.addFilter(LANGUAGE, text.toString())
         }
 
         binding.userScoreRangeSlider.addOnChangeListener { slider, value, fromUser ->
             viewModel.addFilter(USER_MIN_SCORE, "${slider.values[0]}")
             viewModel.addFilter(USER_MAX_SCORE, "${slider.values[1]}")
-//            selectedFilter["vote_average.gte"] = "${slider.values[0]}"
-//            selectedFilter["vote_average.lte"] = "${slider.values[1]}"
         }
 
         binding.userVotesRangeSlider.addOnChangeListener { slider, value, fromUser ->
-            //selectedFilter["vote_count.gte"] = "$value"
             viewModel.addFilter(USER_VOTES, "$value")
         }
 
         binding.runtimeSlider.addOnChangeListener { slider, value, fromUser ->
             viewModel.addFilter(USER_MIN_RUNTIME, "${slider.values[0]}")
             viewModel.addFilter(USER_MAX_RUNTIME, "${slider.values[1]}")
-
-//            selectedFilter["with_runtime.gte"] = "${slider.values[0]}"
-//            selectedFilter["with_runtime.lte"] = "${slider.values[1]}"
         }
-
-//        binding.bottomSheetChipGroup.setOnCheckedChangeListener { group, checkedId ->
-//            if(currentlySelectedChips.contains(checkedId)){
-//                viewModel.removeFilter(CHOSEN_GENRES, checkedId)
-////               currentlySelectedChips.remove(checkedId)
-//            }else{
-//                viewModel.addFilter(CHOSEN_GENRES, checkedId)
-////                currentlySelectedChips.add(checkedId)
-//            }
-//        }
 
         launchAndRepeatWithViewLifecycle {
             binding.bottomSheetChipGroup.removeAllViews()
@@ -209,40 +178,97 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
                 addChips(binding.bottomSheetChipGroup, genres)
             }
         }
-//        val c = Calendar.getInstance()
-//        val year = c.get(Calendar.YEAR)
-//        val month = c.get(Calendar.MONTH)
-//        val day = c.get(Calendar.DAY_OF_MONTH)
+
         binding.datePickerFrom.setOnClickListener {
-            val calendarFrom = getDate(true)
-            datePicker(calendarFrom, binding.datePickerFrom, true)
+            //val calendarFrom = getDate(true)
+            //datePicker(calendarFrom, binding.datePickerFrom, true)
+            val date =
+                if (filterParams.dateFrom.isEmpty()) {
+                    Calendar.getInstance().timeInMillis
+                } else {
+                    filterParams.dateFrom.toLong()
+                }
+
+            showDatePicker(
+                date,
+                binding.datePickerFrom,
+                true,
+                timeCallBack
+            )
         }
 
         binding.datePickerTo.setOnClickListener {
-            val calendarTo = getDate(false)
-            datePicker(calendarTo, binding.datePickerTo, false)
+//            val calendarTo = getDate(false)
+//            datePicker(calendarTo, binding.datePickerTo, false)
+
+            val date =
+                if (filterParams.dateTo.isEmpty()) {
+                    Calendar.getInstance().timeInMillis
+                } else {
+                    filterParams.dateTo.toLong()
+                }
+
+            showDatePicker(
+                date,
+                binding.datePickerTo,
+                false,
+                timeCallBack
+            )
         }
 
-//        val items = listOf(
-//            getString(R.string.english),
-//            getString(R.string.french),
-//            getString(R.string.german),
-//            getString(R.string.italian),
-//            getString(R.string.chinese)
-//        )
-
-
-        val adapter = ArrayAdapter(requireContext(), R.layout.language_list_item, viewModel.getLanguageList(requireContext()))
+        val adapter = ArrayAdapter(
+            requireContext(),
+            R.layout.language_list_item,
+            viewModel.getLanguageList(requireContext())
+        )
         (binding.languageMenu.editText as? AutoCompleteTextView)?.setAdapter(adapter)
-        binding.languageAutoComplete.setText(viewModel.getLanguageList(requireContext())[2], false)
-
-
+        binding.languageAutoComplete.setText(viewModel.getLanguageList(requireContext())[0], false)
 
         binding.filterBtn.setOnClickListener {
-            //getLatestValues()
             listener(viewModel.filerParams)
             dismiss()
         }
+    }
+
+    private val timeCallBack: (
+        mills: Long,
+        formatted: String,
+        from: Boolean
+    ) -> Unit = { milis, formatted, from ->
+        if (from) {
+            viewModel.addFilter(FROM_DATE, formatted.replace("-",""))
+        } else {
+            viewModel.addFilter(TO_DATE, formatted.replace("-",""))
+        }
+    }
+
+    private fun showDatePicker(
+        initialValue: Long,
+        presenterTextView: TextView,
+        from: Boolean,
+        onDateSelected: (mills: Long, formatted: String, from: Boolean) -> Unit
+    ) {
+
+        val formatter = SimpleDateFormat("dd-MM-yyyy")
+        val calender = Calendar.getInstance()
+        calender.timeInMillis =
+            initialValue.takeIf { it > 0 } ?: MaterialDatePicker.todayInUtcMilliseconds()
+//        presenterTextView.text = formatter.format(calender.time)
+
+        MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Select a date")
+            .setSelection(calender.timeInMillis)
+            .build().let { datePicker ->
+
+                datePicker.addOnPositiveButtonClickListener {
+                    calender.timeInMillis = it
+                    presenterTextView.text = formatter.format(calender.time)
+                    onDateSelected(it, formatter.format(calender.time), from)
+                    datePicker.dismiss()
+                }
+
+                datePicker.show(parentFragmentManager, DATE_PICKER_TAG)
+            }
     }
 
 //    val date = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(requireContext())
@@ -280,20 +306,10 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
     private fun getDate(from: Boolean): LocalDate {
         val strDate: String? = null
 
-//        if (from && selectedFilter.contains("release_date.gte")) {
-//            strDate = selectedFilter["release_date.gte"]
-//        } else if (!from && selectedFilter.contains("release_date.lte")) {
-//            strDate = selectedFilter["release_date.lte"]
-//        }
-
-        if (from && viewModel.filerParams.dateFrom.isNotEmpty()) {
-            viewModel.addFilter(FROM_DATE, viewModel.filerParams.dateFrom)
-
-           // strDate = selectedFilter["release_date.gte"]
-        } else if (!from && viewModel.filerParams.dateTo.isNotEmpty()) {
-            viewModel.addFilter(TO_DATE, viewModel.filerParams.dateTo)
-
-            // strDate = selectedFilter["release_date.lte"]
+        if (from && filterParams.dateFrom.isNotEmpty()) {
+            viewModel.addFilter(FROM_DATE, filterParams.dateFrom)
+        } else if (!from && filterParams.dateTo.isNotEmpty()) {
+            viewModel.addFilter(TO_DATE, filterParams.dateTo)
         }
 
         return if (strDate != null) {
@@ -307,5 +323,4 @@ class FilterBottomSheet : BottomSheetDialogFragment() {
             LocalDate.of(year, month, day)
         }
     }
-
 }
