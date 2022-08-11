@@ -25,6 +25,7 @@ class NowPlayingMoviesViewModel @Inject constructor(
     private val _selectedChips = MutableStateFlow<Set<Int>>(emptySet())
     val selectedChips = _selectedChips.asStateFlow()
 
+    //ronel - chips movie list not changing
     private val filteresAndGenresCombo = combine(
         selectedChips,
         observeGenres.flow
@@ -32,7 +33,6 @@ class NowPlayingMoviesViewModel @Inject constructor(
         Pair(selectedChips, genresList)
     }
 
-    //ronel - chips movie list not changing
     val pageList: Flow<PagingData<MovieAndGenre>> =
         filteresAndGenresCombo.flatMapLatest { pair ->
             pagingInteractor.flow

@@ -15,7 +15,6 @@ import javax.inject.Inject
 class DiscoverPagingSource @Inject constructor(
     val movieRepository: MoviesRepository,
     val dispatchers: AppCoroutineDispatchers,
-    val paramMap : Map<String, String>
 ) : PagingSource<Int, Movie>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
@@ -24,6 +23,7 @@ class DiscoverPagingSource @Inject constructor(
 
             val movieList: MutableList<Movie> = mutableListOf()
             withContext(dispatchers.io){
+//                val result = movieRepository.getFilteredMovieList(pageNumber, paramMap).first()
                 val result = movieRepository.getFilteredMovieList(pageNumber, paramMap).first()
 
                 when (result) {
