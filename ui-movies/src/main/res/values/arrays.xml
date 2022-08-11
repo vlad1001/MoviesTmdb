@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="score_runtime_values">
+    <array name="runtime_range">
         <item>0</item>
         <item>400</item>
     </array>
+
+    <array name="user_score_range">
+        <item>0</item>
+        <item>10</item>
+    </array>
+
+    <array name="user_votes_range">
+        <item>0</item>
+        <item>500</item>
+    </array>
+
+
 </resources>

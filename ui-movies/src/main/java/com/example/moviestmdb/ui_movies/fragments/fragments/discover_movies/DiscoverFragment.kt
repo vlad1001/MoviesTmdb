@@ -18,23 +18,20 @@ import com.example.moviestmdb.core_ui.util.showToast
 import com.example.moviestmdb.ui_movies.R
 import com.example.moviestmdb.ui_movies.databinding.FragmentDiscoverMoviesBinding
 import com.example.moviestmdb.ui_movies.fragments.fragments.filter_movies.FilterBottomSheet
-import com.example.moviestmdb.ui_movies.fragments.view_holder.MovieAndGenre
+import com.example.moviestmdb.ui_movies.fragments.model.MovieAndGenre
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.first
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DiscoverFragment : Fragment() {
     lateinit var binding: FragmentDiscoverMoviesBinding
     private val viewModel: DiscoverViewModel by viewModels()
-    lateinit var discoverAdapter: DiscoverMoviesAdapter
+    private lateinit var discoverAdapter: DiscoverMoviesAdapter
+    private var bottomTag: String = "FilterBottomSheet"
 
     @Inject
     lateinit var tmdbImageManager: TmdbImageManager
-
-    var bottomTag: String = "FilterBottomSheet"
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,9 +50,9 @@ class DiscoverFragment : Fragment() {
         initVars()
 
         launchAndRepeatWithViewLifecycle {
-            viewModel.getPagingData().collectLatest{ pagingData ->
+            viewModel.pagedList.collectLatest { pagingData ->
                 val data = pagingData.map {
-                    MovieAndGenre(it, viewModel.genres.first())
+                    MovieAndGenre(it, viewModel.genres.value)
                 }
                 discoverAdapter.submitData(data)
             }
@@ -76,16 +73,20 @@ class DiscoverFragment : Fragment() {
     }
 
     private fun showFilterBottomSheet() {
-        val callback: (response: HashMap<String, String>) -> Unit = { filterData ->
-            Timber.i("$filterData")
+        val filterBottomSheet = FilterBottomSheet(viewModel.requireFilters()) { filterData ->
+            viewModel.replaceFilters(filterData)
         }
-
-        val filterBottomSheet = FilterBottomSheet()
-        filterBottomSheet.listener = callback
         filterBottomSheet.show(childFragmentManager, bottomTag)
+
+//        it.show(childFragmentManager, bottomTag)
+        //filterBottomSheet.listener = callback
     }
 
-    fun initDiscoverAdapter() {
+//    private val callback: (response: FilterParams) -> Unit = { filterData ->
+//        viewModel.replaceFilters(filterData)
+//    }
+
+    private fun initDiscoverAdapter() {
         discoverAdapter =
             DiscoverMoviesAdapter(
                 tmdbImageManager.getLatestImageProvider(),
@@ -96,7 +97,9 @@ class DiscoverFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             adapter = discoverAdapter
 
-            val spacing = resources.getDimension(com.example.moviestmdb.core_ui.R.dimen.spacing_normal).toInt()
+            val spacing =
+                resources.getDimension(com.example.moviestmdb.core_ui.R.dimen.spacing_normal)
+                    .toInt()
             val decoration = SpaceItemDecoration(
                 spacing, -spacing
             )

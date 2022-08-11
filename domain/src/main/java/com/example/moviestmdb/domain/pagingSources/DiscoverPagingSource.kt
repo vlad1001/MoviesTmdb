@@ -16,14 +16,15 @@ class DiscoverPagingSource @Inject constructor(
     val movieRepository: MoviesRepository,
     val dispatchers: AppCoroutineDispatchers,
 ) : PagingSource<Int, Movie>() {
+
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
             val pageNumber = params.key ?: 1
 
             val movieList: MutableList<Movie> = mutableListOf()
             withContext(dispatchers.io){
-                val result = movieRepository.getFilteredMovieList(pageNumber, emptyMap()).first()
 //                val result = movieRepository.getFilteredMovieList(pageNumber, paramMap).first()
+                val result = movieRepository.getFilteredMovieList(pageNumber, paramMap).first()
 
                 when (result) {
                     is Result.Error -> Timber.i(result.exception)

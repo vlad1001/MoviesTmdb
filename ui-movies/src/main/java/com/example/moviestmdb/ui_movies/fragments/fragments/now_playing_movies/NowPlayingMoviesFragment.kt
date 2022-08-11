@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI.setupWithNavController
-import androidx.paging.map
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.moviestmdb.Genre
@@ -20,14 +19,10 @@ import com.example.moviestmdb.core_ui.util.showToast
 import com.example.moviestmdb.ui_movies.R
 import com.example.moviestmdb.ui_movies.databinding.FragmentNowPlayingMoviesBinding
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import com.example.moviestmdb.core.constants.Constants.MOVIE_ID
 import com.example.moviestmdb.ui_movies.databinding.ChipBinding
-import com.example.moviestmdb.ui_movies.fragments.view_holder.MovieAndGenre
 import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.first
 
 @AndroidEntryPoint

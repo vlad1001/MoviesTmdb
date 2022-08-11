@@ -11,6 +11,15 @@
         app:behavior_hideable="true"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+        <ImageView
+            android:id="@+id/close_bottom_sheet"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="15dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_close"/>
+
         <TextView
             android:id="@+id/from_txt"
             android:layout_width="wrap_content"
@@ -117,6 +126,7 @@
             android:value="5"
             android:valueFrom="0"
             android:valueTo="10"
+            app:values="@array/user_score_range"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_score_txt" />
@@ -188,7 +198,7 @@
             android:stepSize="10"
             android:valueFrom="0"
             android:valueTo="400"
-            app:values="@array/score_runtime_values"
+            app:values="@array/runtime_range"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/runtime_txt" />

@@ -2,9 +2,8 @@ package com.example.moviestmdb.ui_movies.fragments.fragments.now_playing_movies
 
 import androidx.paging.PagingData
 import com.example.moviestmdb.Genre
-import com.example.moviestmdb.Movie
 import com.example.moviestmdb.core.util.UiMessage
-import com.example.moviestmdb.ui_movies.fragments.view_holder.MovieAndGenre
+import com.example.moviestmdb.ui_movies.fragments.model.MovieAndGenre
 
 class NowPlayingViewState (
     val nowPlayingPagingData: PagingData<MovieAndGenre> = PagingData.empty(),

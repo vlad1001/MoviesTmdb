@@ -8,7 +8,7 @@ import com.example.moviestmdb.core.util.AppCoroutineDispatchers
 import com.example.moviestmdb.domain.interactors.UpdateGenres
 import com.example.moviestmdb.domain.observers.ObserveGenres
 import com.example.moviestmdb.domain.observers.paging_observers.ObservePagedNowPlayingMovies
-import com.example.moviestmdb.ui_movies.fragments.view_holder.MovieAndGenre
+import com.example.moviestmdb.ui_movies.fragments.model.MovieAndGenre
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
