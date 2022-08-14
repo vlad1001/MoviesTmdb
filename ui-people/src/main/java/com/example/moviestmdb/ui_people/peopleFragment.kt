@@ -27,6 +27,5 @@ class peopleFragment : Fragment() {
 
         setupWithNavController(binding.toolbar, findNavController())
         binding.toolbar.title = "people"
-
     }
 }

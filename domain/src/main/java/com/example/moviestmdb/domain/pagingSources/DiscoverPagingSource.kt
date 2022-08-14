@@ -27,14 +27,14 @@ class DiscoverPagingSource @Inject constructor(
                 val result = movieRepository.getFilteredMovieList(pageNumber, paramMap).first()
 
                 when (result) {
-                    is Result.Error -> Timber.i(result.exception)
+                    is Result.Error -> Timber.e(result.exception)
                     is Result.Success -> {
                         movieList.addAll(result.data.movieList)
                     }
                 }
             }
 
-            val prevKey = if (pageNumber >= 1) pageNumber - 1 else null
+            val prevKey = if (pageNumber > 1) pageNumber - 1 else null
             val nextKey = if (movieList.isNotEmpty()) pageNumber + 1 else null
 
             LoadResult.Page(
