@@ -1,6 +1,7 @@
 package com.example.moviestmdb.core.di
 
 import com.example.moviestmdb.core.data.movies.MoviesStore
+import com.example.moviestmdb.core.data.people.PeopleStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -30,4 +31,8 @@ class StoreModule {
     @Provides
     @TopRated
     fun provideTopRatedStore(): MoviesStore = MoviesStore()
+
+    @Singleton
+    @Provides
+    fun providePeopleStore(): PeopleStore = PeopleStore()
 }

@@ -80,6 +80,7 @@ class CoreUiLibraryPlugin : Plugin<Project> {
             "implementation"(Libs.Coroutines.core)
 
             "implementation"(Libs.timber)
+//            "implementation"(Libs.Pallete.pallete)
 
 
 //            "implementation"(Libs.AndroidX.Lifecycle.runtime)

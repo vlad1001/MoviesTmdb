@@ -1,6 +1,5 @@
 package com.example.moviestmdb.core.data.movies.datasources
 
-import com.example.moviestmdb.Genre
 import com.example.moviestmdb.GenreResponse
 import com.example.moviestmdb.MovieCredit
 import com.example.moviestmdb.MovieResponse

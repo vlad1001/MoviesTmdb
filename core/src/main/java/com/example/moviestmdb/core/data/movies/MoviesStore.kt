@@ -1,7 +1,5 @@
 package com.example.moviestmdb.core.data.movies
 
-import com.example.moviestmdb.Cast
-import com.example.moviestmdb.MovieCredit
 import com.example.moviestmdb.Movie
 import kotlinx.coroutines.flow.*
 import javax.inject.Inject
@@ -52,7 +50,7 @@ class MoviesStore @Inject constructor() {
         }
     }
 
-    fun getAllStoreMovies() : Flow<List<Movie>> {
+    fun getAllStoreMovies(): Flow<List<Movie>> {
         return _movies.map {
             it.values.flatten()
         }

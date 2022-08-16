@@ -72,6 +72,16 @@ class ApplicationPlugin : Plugin<Project> {
             "implementation"(Libs.AndroidX.Lifecycle.runtime)
             "implementation"(Libs.AndroidX.Lifecycle.process)
             "implementation"(Libs.AndroidX.Lifecycle.viewmodel)
+            "implementation"(Libs.AndroidX.Lifecycle.viewModelCompose)
+            "implementation"(Libs.AndroidX.Compose.composeUI)
+//            "implementation"(Libs.AndroidX.Compose.composeLivedata)
+//            "implementation"(Libs.AndroidX.Compose.composeRxJava)
+//            "implementation"(Libs.AndroidX.Compose.composeMaterialIcons)
+//            "implementation"(Libs.AndroidX.Compose.composeMaterialIconsExtended)
+//            "implementation"(Libs.AndroidX.Compose.composeMaterial)
+//            "implementation"(Libs.AndroidX.Compose.composeUITooling)
+//            "implementation"(Libs.AndroidX.Compose.composeFoundation)
+
             "kapt"(Libs.AndroidX.Lifecycle.compiler)
 
             "implementation"(Libs.AndroidX.Navigation.fragment)

@@ -29,9 +29,6 @@ class ObservePagedPopularMovies @Inject constructor(
             },
             pagingSourceFactory = pagingSourceFactory
         ).flow
-//            .filter {
-//
-//        }
     }
 
     private val pagingSourceFactory = InvalidatingPagingSourceFactory(::createPagingSource)

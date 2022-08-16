@@ -1,12 +1,9 @@
 package com.example.moviestmdb.core.network
 
-import android.graphics.pdf.PdfDocument
-import com.example.moviestmdb.Genre
 import com.example.moviestmdb.GenreResponse
 import com.example.moviestmdb.MovieCredit
 import com.example.moviestmdb.MovieResponse
 import retrofit2.Call
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

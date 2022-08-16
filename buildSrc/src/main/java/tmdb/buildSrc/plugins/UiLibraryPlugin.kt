@@ -76,6 +76,8 @@ class UiLibraryPlugin : Plugin<Project> {
 
             "implementation"(Libs.AndroidX.Navigation.fragment)
             "implementation"(Libs.AndroidX.Navigation.uiKtx)
+
+            //"implementation"(Libs.Pallete.pallete)
         }
     }
 }

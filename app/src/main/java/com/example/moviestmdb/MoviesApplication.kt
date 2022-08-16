@@ -1,11 +1,8 @@
 package com.example.moviestmdb
 
 import android.app.Application
-import android.content.Context
 import androidx.lifecycle.ProcessLifecycleOwner
-import com.example.moviestmdb.core.di.ApplicationScope
 import dagger.hilt.android.HiltAndroidApp
-import kotlinx.coroutines.CoroutineScope
 import timber.log.Timber
 import javax.inject.Inject
 

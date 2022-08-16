@@ -9,7 +9,7 @@ import java.io.IOException
 import javax.inject.Inject
 
 class MoviesPagingSource(
-    val moviesStore: MoviesStore
+    private val moviesStore: MoviesStore
 ) : PagingSource<Int, Movie>() {
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Movie> {
         return try {
@@ -17,7 +17,7 @@ class MoviesPagingSource(
 
             val movies = moviesStore.getMoviesForPage(pageNumber) ?: emptyList()
 
-            val prevKey = if (pageNumber >= 1) pageNumber - 1 else null
+            val prevKey = if (pageNumber > 1) pageNumber - 1 else null
             val nextKey = if (movies.isNotEmpty()) pageNumber + 1 else null
 
             LoadResult.Page(

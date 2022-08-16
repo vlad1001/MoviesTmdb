@@ -6,6 +6,6 @@
 
     <fragment
         android:id="@+id/peopleFragment"
-        android:name="com.example.moviestmdb.ui_people.peopleFragment"
+        android:name="com.example.moviestmdb.ui_people.LobbyPeopleFragment"
         android:label="peopleFragment" />
 </navigation>
